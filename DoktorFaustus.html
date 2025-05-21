@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Wortfrequenzanalyse – Faust</title>
+  <style>
+    body {
+      font-family: "Times New Roman", serif;
+      margin: 2rem;
+      background-color: #f7f7f7;
+    }
+    textarea {
+      width: 100%;
+      height: 250px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 16px;
+    }
+    .results {
+      margin-top: 2rem;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Wortfrequenzanalyse – Goethe: Faust</h1>
+  <p>Analysieren Sie die häufigsten Wörter im folgenden Auszug:</p>
+
+  <textarea id="textInput">Habe nun, ach! Philosophie,  
+Juristerei und Medizin,  
+Und leider auch Theologie!  
+Durchaus studiert, mit heißem Bemühn.  
+Da steh ich nun, ich armer Tor!  
+Und bin so klug als wie zuvor;  
+Heiße Magister, heiße Doktor gar,  
+Und ziehe schon an die zehen Jahr  
+Herauf, herab und quer und krumm  
+Meine Schüler an der Nase herum –  
+Und sehe, dass wir nichts wissen können!  
+Das will mir schier das Herz verbrennen.</textarea>
+
+  <br>
+  <button onclick="analysiereText()">Analysieren</button>
+
+  <div class="results" id="ausgabe"></div>
+
+  <script>
+    function analysiereText() {
+      const stopwords = ["der", "die", "das", "und", "ist", "zu", "mit", "auch", "ein", "eine", "ich", "in", "an", "den", "dem", "des", "wie", "so", "wir", "da", "nicht", "von", "auf", "für", "sich", "im", "er", "sie", "es", "du", "was", "doch"];
+      const text = document.getElementById("textInput").value.toLowerCase();
+      const gereinigt = text.replace(/[^a-zäöüß\s]/g, '');
+      const woerter = gereinigt.split(/\s+/).filter(w => w && !stopwords.includes(w));
+
+      const haeufigkeit = {};
+
+      for (let wort of woerter) {
+        haeufigkeit[wort] = (haeufigkeit[wort] || 0) + 1;
+      }
+
+      const sortiert = Object.entries(haeufigkeit)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+
+      let output = "<h2>Top 10 häufigste Wörter</h2><table><tr><th>Wort</th><th>Anzahl</th></tr>";
+      for (let [wort, anzahl] of sortiert) {
+        output += `<tr><td>${wort}</td><td>${anzahl}</td></tr>`;
+      }
+      output += "</table>";
+
+      document.getElementById("ausgabe").innerHTML = output;
+    }
+  </script>
+
+</body>
+</html>
